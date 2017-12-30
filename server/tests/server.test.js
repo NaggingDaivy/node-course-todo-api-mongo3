@@ -22,9 +22,7 @@ describe('POST /todos', () => {
 
         request(app)
             .post('/todos')
-            .send({
-                text
-            })
+            .send({text})
             .expect(200)
             .expect((res) => {
                 expect(res.body.text).toBe(text);
@@ -70,7 +68,5 @@ describe('GET /todos', () => {
                 expect(res.body.todos.length).toBe(2);
             })
             .end(done);
-
     });
-
 })
