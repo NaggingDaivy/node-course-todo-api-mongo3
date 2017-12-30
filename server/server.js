@@ -12,6 +12,7 @@ const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json()); // convert JSON to object, NE PAS OUBLIER SINON RETOURNERA UNDEFINED
 
+//POST /todos
 app.post('/todos', (req, res) => {
     var todo = new Todo({
         text: req.body.text
@@ -26,6 +27,7 @@ app.post('/todos', (req, res) => {
 
 });
 
+//GET /todos
 app.get('/todos',(req,res) => {
     Todo.find().then((todos) => { 
         // res.send(todos);
@@ -44,7 +46,7 @@ app.get('/todos/:id', (req,res) => {
     var id = req.params.id;
 
     if(!ObjectID.isValid(id))
-        return res.status(404).send({});
+        return res.status(404).send();
 
     Todo.findById(id).then((todo) => {
         if(!todo)
@@ -56,6 +58,26 @@ app.get('/todos/:id', (req,res) => {
 
     } );
 
+
+});
+
+//DELETE /todos/:id
+app.delete('/todos/:id', (req, res) => {
+    var id = req.params.id;
+
+    if (!ObjectID.isValid(id))
+        return res.status(404).send();
+
+    Todo.findByIdAndRemove(id).then((doc) => {
+
+        if (!doc)
+            res.status(404).send();
+
+        res.send(doc);
+
+    }).catch((err) => {
+        res.status(400).send();
+    });
 
 });
 
