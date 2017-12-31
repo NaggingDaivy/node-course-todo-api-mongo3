@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 
 var UserSchema = new mongoose.Schema({
     email: {
@@ -78,8 +79,6 @@ UserSchema.statics.findByToken = function(token) {
         // });
 
         return Promise.reject(err);
-
-
     }
 
     return User.findOne({
@@ -90,6 +89,21 @@ UserSchema.statics.findByToken = function(token) {
 
 
 };
+
+UserSchema.pre('save',function(next){
+    var user = this;
+    if (user.isModified('password')) { // we only want to encrypt the password if it has been modified
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(user.password, salt, (err, hash) => {
+                user.password = hash;
+                next();
+            });
+        });
+    }
+    else
+        next();
+
+});
 
 var User = mongoose.model('Users', UserSchema);
 
