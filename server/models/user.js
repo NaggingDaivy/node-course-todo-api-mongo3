@@ -44,7 +44,7 @@ UserSchema.methods.toJSON = function () { // ce que renvoie mongoose quand on co
 
 UserSchema.methods.generateAuthToken = function() {
 
-    var user = this;
+    var user = this; // instance method
     var access = 'auth';
     var token = jwt.sign({_id: user._id.toHexString(), access},'abc123').toString();
 
@@ -61,6 +61,33 @@ UserSchema.methods.generateAuthToken = function() {
     // }).then((token) => {
 
     // })
+
+};
+
+UserSchema.statics.findByToken = function(token) {
+
+    var User = this; // model method
+    var decoded;
+    try {
+        decoded = jwt.verify(token, 'abc123');
+
+    } catch (err) {
+        // return new Promsise((resolve, reject) => {
+        //     reject();
+
+        // });
+
+        return Promise.reject(err);
+
+
+    }
+
+    return User.findOne({
+        _id: decoded._id, // id de l'user, pas du token
+        'tokens.token': token,
+        'tokens.access': 'auth'
+    });
+
 
 };
 
