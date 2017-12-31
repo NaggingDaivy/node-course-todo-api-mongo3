@@ -116,7 +116,28 @@ app.patch('/todos/:id', (req, res) => {
 
 })
 
+/*************************USERS*************************************** */
+//POST /users
 
+app.post('/users', (req, res) => {
+
+    var body = _.pick(req.body, ['email', 'password']);
+    var user = new User(body);
+
+    // User.findByToken
+    // user.generateAuthToken
+
+    user.save().then(() => { // pas nécessaire de mettre l'argument "user" car on fait une copie inutile
+        return user.generateAuthToken();
+        // res.send(user);
+    }).then((token) => {
+        res.header('x-auth',token).send(user);
+
+    }).catch((err) => {
+        res.status(400).send(err);
+    });
+
+});
 
 app.listen(port, () => {
 
