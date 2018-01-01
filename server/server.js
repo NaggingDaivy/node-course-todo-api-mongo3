@@ -125,8 +125,9 @@ app.post('/users', (req, res) => {
     var body = _.pick(req.body, ['email', 'password']);
     var user = new User(body);
 
-    // User.findByToken
-    // user.generateAuthToken
+   
+
+    //Avant de faire un save, il va faire un hash du mot de passe (voir user.js)
 
     user.save().then(() => { // pas nécessaire de mettre l'argument "user" car on fait une copie inutile
         return user.generateAuthToken();
