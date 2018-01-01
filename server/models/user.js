@@ -65,6 +65,17 @@ UserSchema.methods.generateAuthToken = function() {
 
 };
 
+UserSchema.methods.removeToken = function(token) {
+    var user = this;
+
+    return user.update({ //pull permet de retirer des élements avec certains critères
+        $pull : {
+            tokens : {token}
+        }
+    });
+
+}
+
 UserSchema.statics.findByToken = function(token) {
 
     var User = this; // model method
@@ -120,7 +131,6 @@ UserSchema.pre('save',function(next){
     }
     else
         next();
-
 });
 
 var User = mongoose.model('Users', UserSchema);

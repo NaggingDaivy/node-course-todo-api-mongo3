@@ -5,7 +5,7 @@ var authenticate = (req, res, next) => {
 
     User.findByToken(token).then((user) => {
         if (!user)
-            return Promise.reject; // va aller dans le catch
+            return Promise.reject(); // va aller dans le catch
 
         // res.send(user);
         req.user = user;
